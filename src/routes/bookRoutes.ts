@@ -3,7 +3,7 @@ import express from 'express'
 const router = express.Router()
 
 router.get('/', function (req, res) {
-  return 'asdfsfdasdfaasdf'
+  res.send('hola desde books!')
 })
 
 export default router
