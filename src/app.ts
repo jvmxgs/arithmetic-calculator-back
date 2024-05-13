@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express'
-import userRoutes from './routes/userRoutes'
+import userRoutes from './routes/v1/userRoutes'
 
 const app = express()
 

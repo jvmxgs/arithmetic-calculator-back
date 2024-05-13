@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import AppDataSource from '../database/data-source'
-import { User } from '../database/entities/User'
+import AppDataSource from '../../database/data-source'
+import { User } from '../../database/entities/User'
 
 const getUsers = (req: Request, res: Response): void => {
   console.log('getting users - - - - - - - - - - - - - - - - - - - -')
