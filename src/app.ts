@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express'
-import bookRoutes from './routes/bookRoutes'
+import userRoutes from './routes/userRoutes'
 
 const app = express()
 
@@ -7,6 +7,6 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!')
 })
 
-app.use('/books', bookRoutes)
+app.use('/users', userRoutes)
 
 export default app
