@@ -1,34 +1,89 @@
-import { Request, Response } from 'express'
+import { Request, RequestHandler, Response } from 'express'
 import AppDataSource from '../../database/data-source'
-import { User } from '../../database/entities/User'
+import { User } from '../../database/entities/user'
+import { Equal, Repository } from 'typeorm'
+import { validationResult } from 'express-validator'
+import bcrypt from 'bcrypt'
+import { userResource } from '../../resources/user'
 
-const getUsers = (req: Request, res: Response): void => {
-  console.log('getting users - - - - - - - - - - - - - - - - - - - -')
-  AppDataSource.manager.find(User).then(data => {
-    console.log(data)
-    res.json({
+const index = (async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const users = await AppDataSource.manager.find(User)
+
+    return res.json({
       status: 'success',
-      data
+      users
     })
-  }).catch(err => {
-    console.log(err)
-    res.status(500).json({
+  } catch (err) {
+    return res.status(500).json({
       status: 'error',
       message: 'Internal server error'
     })
-  })
-}
+  }
+}) as RequestHandler
 
-const getUserById = (req: Request, res: Response): void => {
+const show = (req: Request, res: Response): void => {
   //
 }
 
-const addUser = (req: Request, res: Response): void => {
-  //
+export const store = (async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        status: 'error',
+        errors: errors.array()
+      })
+    }
+
+    return await handleUserCreation(req, res)
+  } catch (err) {
+    console.log(err)
+    return res.status(500).json({ status: 'error', message: 'Internal server error' })
+  }
+}) as RequestHandler
+
+const initializeUserRepository = (): Repository<User> => {
+  return AppDataSource.getRepository(User)
+}
+async function handleUserCreation (req: Request, res: Response): Promise<Response> {
+  const { first_name: firstName, last_name: lastName, email, password } = req.body
+
+  const userExists = await checkIfUserExists(email)
+  if (userExists) {
+    return res.status(409).json({ error: 'User already exists' })
+  }
+
+  const passwordHash = bcrypt.hashSync(password, 10)
+  const newUser = await createUser(firstName, lastName, email, passwordHash)
+
+  return res.status(201).json({ message: 'User created successfully', user: userResource(newUser) })
+}
+
+async function checkIfUserExists (email: string): Promise<boolean> {
+  const userRepository = initializeUserRepository()
+  return await userRepository.exists({ where: { email: Equal(email) } })
+}
+
+async function createUser (firstName: string, lastName: string, email: string, passwordHash: string): Promise<User> {
+  return await saveUser(firstName, lastName, email, passwordHash)
+}
+
+const saveUser = async (firstName: string, lastName: string, email: string, password: string): Promise<User> => {
+  const userRepository = initializeUserRepository()
+  const newUser = new User()
+
+  newUser.first_name = firstName
+  newUser.last_name = lastName
+  newUser.email = email
+  newUser.password = password
+
+  return await userRepository.save(newUser)
 }
 
 export default {
-  getUsers,
-  getUserById,
-  addUser
+  index,
+  store,
+  show
 }

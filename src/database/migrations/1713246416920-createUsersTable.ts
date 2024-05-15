@@ -26,6 +26,16 @@ export class CreateUsersTable1713246416920 implements MigrationInterface {
           isUnique: true
         },
         {
+          name: 'password',
+          type: 'varchar'
+        },
+        {
+          name: 'status',
+          type: 'enum',
+          enum: ['active', 'inactive'],
+          default: '"inactive"'
+        },
+        {
           name: 'created_at',
           type: 'timestamp',
           default: 'CURRENT_TIMESTAMP',

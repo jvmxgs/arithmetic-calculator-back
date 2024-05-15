@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import { UserStatus } from '../../enums/userStatus'
 
 @Entity('users')
 export class User {
@@ -13,6 +14,16 @@ export class User {
 
   @Column()
     email!: string
+
+  @Column()
+    password!: string
+
+  @Column({
+    type: 'enum',
+    enum: UserStatus,
+    default: UserStatus.active
+  })
+    status!: UserStatus
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)' })
     created_at!: Date
