@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import jwt, { JsonWebTokenError } from 'jsonwebtoken'
+import jwt, { JsonWebTokenError, JwtPayload } from 'jsonwebtoken'
 import appConfig from '../config/app'
 
 export default function (req: Request, res: Response, next: NextFunction): void {
@@ -12,7 +12,9 @@ export default function (req: Request, res: Response, next: NextFunction): void 
       return
     }
 
-    jwt.verify(token, appConfig.key)
+    const verifiedToken = jwt.verify(token, appConfig.key)
+
+    regenerateToken(res, verifiedToken)
 
     next()
   } catch (err) {
@@ -22,5 +24,15 @@ export default function (req: Request, res: Response, next: NextFunction): void 
     }
 
     res.status(500).json({ error: 'Internal server error' })
+  }
+}
+
+const regenerateToken = (res: Response, verifiedToken: string | JwtPayload): void => {
+  const currentTime = Math.floor(Date.now() / 1000)
+  const decodedToken = verifiedToken as { exp: number, email: string }
+
+  if (decodedToken.exp - currentTime < 300) {
+    const newToken = jwt.sign({ email: decodedToken.email }, appConfig.key, { expiresIn: '1h' })
+    res.setHeader('Authorization', `Bearer ${newToken}`)
   }
 }
