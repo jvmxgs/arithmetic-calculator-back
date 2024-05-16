@@ -1,14 +1,10 @@
-import express, { Request, Response } from 'express'
-import userRoutes from './routes/v1/userRoutes'
+import express from 'express'
+import routes from './routes/v1'
 
 const app = express()
 
 app.use(express.json())
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!')
-})
-
-app.use('/users', userRoutes)
+app.use('/', routes)
 
 export default app

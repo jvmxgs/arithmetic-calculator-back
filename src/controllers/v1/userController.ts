@@ -1,9 +1,9 @@
+import bcrypt from 'bcrypt'
 import { Request, RequestHandler, Response } from 'express'
+import { validationResult } from 'express-validator'
+import { Equal, Repository } from 'typeorm'
 import AppDataSource from '../../database/data-source'
 import { User } from '../../database/entities/user'
-import { Equal, Repository } from 'typeorm'
-import { validationResult } from 'express-validator'
-import bcrypt from 'bcrypt'
 import { userResource } from '../../resources/user'
 
 const index = (async (req: Request, res: Response): Promise<Response> => {
@@ -15,10 +15,7 @@ const index = (async (req: Request, res: Response): Promise<Response> => {
       users
     })
   } catch (err) {
-    return res.status(500).json({
-      status: 'error',
-      message: 'Internal server error'
-    })
+    return res.status(500).json({ status: 'error', message: 'Internal server error' })
   }
 }) as RequestHandler
 
@@ -39,7 +36,6 @@ export const store = (async (req: Request, res: Response): Promise<Response> => 
 
     return await handleUserCreation(req, res)
   } catch (err) {
-    console.log(err)
     return res.status(500).json({ status: 'error', message: 'Internal server error' })
   }
 }) as RequestHandler

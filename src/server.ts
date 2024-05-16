@@ -1,7 +1,10 @@
+import dotenv from 'dotenv'
 import app from './app'
 import AppDataSource from './database/data-source'
 
-const port = 3001
+dotenv.config()
+
+const port = process.env.PORT ?? 3001
 
 AppDataSource.initialize()
   .then(() => {
