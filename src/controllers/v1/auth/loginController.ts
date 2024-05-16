@@ -24,7 +24,7 @@ const login = async (req: Request, res: Response): Promise<Response> => {
       return res.status(401).json({ error: 'Invalid email or password' })
     }
 
-    const token = jwt.sign({ email }, appConfig.key, { expiresIn: '1h' })
+    const token = jwt.sign({ email }, appConfig.key, { expiresIn: appConfig.jwt.expiresIn })
 
     return res.json({ token })
   } catch (err) {

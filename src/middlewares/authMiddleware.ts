@@ -32,7 +32,7 @@ const regenerateToken = (res: Response, verifiedToken: string | JwtPayload): voi
   const decodedToken = verifiedToken as { exp: number, email: string }
 
   if (decodedToken.exp - currentTime < 300) {
-    const newToken = jwt.sign({ email: decodedToken.email }, appConfig.key, { expiresIn: '1h' })
+    const newToken = jwt.sign({ email: decodedToken.email }, appConfig.key, { expiresIn: appConfig.jwt.expiresIn })
     res.setHeader('Authorization', `Bearer ${newToken}`)
   }
 }
