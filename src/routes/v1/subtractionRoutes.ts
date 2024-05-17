@@ -1,10 +1,10 @@
 import express from 'express'
-import addtionController from '../../controllers/v1/addtionController'
+import subtractionController from '../../controllers/v1/subtractionController'
 import authMiddleware from '../../middlewares/authMiddleware'
 import commonOperationValidation from '../../validations/commonOperation'
 
 const router = express.Router()
 
-router.post('/', authMiddleware, commonOperationValidation, addtionController.invoke)
+router.post('/', authMiddleware, commonOperationValidation, subtractionController.invoke)
 
 export default router

@@ -4,8 +4,8 @@ import AppDataSource from '../../database/data-source'
 import { User } from '../../database/entities/user'
 import { InsuficientCreditsError } from '../../errors/insuficientCredits'
 import { userResource } from '../../resources/user'
-import addition from '../../services/addition'
 import { decreaseCreditsToUser, getOperation, getUser, handleExceptions } from '../../services/balanceManager'
+import subtraction from '../../services/subtraction'
 
 const invoke = (async (req: Request, res: Response): Promise<Response> => {
   try {
@@ -33,7 +33,7 @@ const invoke = (async (req: Request, res: Response): Promise<Response> => {
       second_number: secondNumber
     } = req.body
 
-    const result = addition(firstNumber, secondNumber)
+    const result = subtraction(firstNumber, secondNumber)
 
     await decreaseCreditsToUser(user, operation, userRepository)
 
