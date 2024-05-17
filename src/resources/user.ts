@@ -7,6 +7,7 @@ export const userResource = (user: User): Object => {
     last_name: user.last_name,
     email: user.email,
     status: user.status,
+    credits: user.credits,
     created_at: user.created_at,
     updated_at: user.updated_at
   }
