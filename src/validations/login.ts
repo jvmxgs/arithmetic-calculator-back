@@ -12,12 +12,7 @@ export default checkSchema({
   },
   password: {
     notEmpty: {
-      bail: true,
       errorMessage: 'Password is required'
-    },
-    isLength: {
-      options: { min: 8 },
-      errorMessage: 'Password should be at least 8 chars'
     }
   }
 })
