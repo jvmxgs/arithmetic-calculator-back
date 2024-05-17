@@ -26,14 +26,25 @@ describe('Test /api/v1/addition endpoint', () => {
   });
 
   /* it('Should return 200 status code if the authentication token provided is valid', async () => {
+
+    const userData = {
+      email: 'admin@example.com',
+    };
+
+    const secretKey = appConfig.key
+
+    const token = jwt.sign(userData, secretKey)
+
     const response = await request(app)
       .post('/api/v1/addition')
-      .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwiaWF0IjoxNzE1OTc0ODU2LCJleHAiOjE3MTU5Nzg0NTZ9.6i1RxvOCXuRrxmrJ69N8RzTonXx_TKn_oZ7Tp-eloGA')
+      .set('Authorization', 'Bearer ' + token)
       .send({
         first_number: '500',
         second_number: '7'
       });
 
-    expect(response.status).toBe(200);
+    console.log(response.body)
+
+    expect(response.status).toBe(200)
   }); */
 });

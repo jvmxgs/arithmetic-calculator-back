@@ -1,11 +1,11 @@
+import AppTestDataSource from '../src/database/data-source'
 
 export default async function (): Promise<void> {
-  // await AppTestDataSource.initialize()
+  await AppTestDataSource.initialize()
 
-  console.log(' setting up jest')
   /* await new Promise<void>((resolve, reject) => {
     exec('npm run seed:run', (error, stdout, stderr) => {
-      if (error) {
+      if (error !== null) {
         console.error('Error executing command:', error)
         console.error('stderr:', stderr)
         reject(error)
