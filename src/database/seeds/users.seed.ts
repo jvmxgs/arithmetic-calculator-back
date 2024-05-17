@@ -1,8 +1,8 @@
-import AppDataSource from '../data-source'
+import bcrypt from 'bcrypt'
 import Seeder from '../../interfaces/seederInterface'
+import AppDataSource from '../data-source'
 import { User } from '../entities/user'
 import { createUser } from '../factories/user.factory'
-import bcrypt from 'bcrypt'
 
 const userSeeder: Seeder = {
   async seed () {
@@ -14,8 +14,9 @@ const userSeeder: Seeder = {
     users.unshift(createUser({
       firstName: 'Jhon',
       lastName: 'Doe',
-      email: 'admin',
-      password: bcrypt.hashSync('secret', 10)
+      email: 'admin@example.com',
+      password: bcrypt.hashSync('secret', 10),
+      credits: 500
     }))
 
     await userRepository.save(users)

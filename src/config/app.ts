@@ -7,5 +7,10 @@ export default {
 
   jwt: {
     expiresIn: '1h'
+  },
+
+  cors: {
+    origin: process.env.ALLOWED_ORIGIN,
+    credentials: true
   }
 }

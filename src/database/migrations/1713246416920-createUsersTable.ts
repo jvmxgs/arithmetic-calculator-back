@@ -36,6 +36,11 @@ export class CreateUsersTable1713246416920 implements MigrationInterface {
           default: '"inactive"'
         },
         {
+          name: 'credits',
+          type: 'int',
+          default: 0
+        },
+        {
           name: 'created_at',
           type: 'timestamp',
           default: 'CURRENT_TIMESTAMP',

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { UserStatus } from '../../enums/userStatus'
 
 @Entity('users')
@@ -25,9 +25,15 @@ export class User {
   })
     status!: UserStatus
 
+  @Column()
+    credits!: number
+
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)' })
     created_at!: Date
 
   @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)' })
     updated_at!: Date
+
+  @Column({ nullable: true })
+    deleted_at!: Date
 }

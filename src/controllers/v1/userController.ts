@@ -48,13 +48,13 @@ async function handleUserCreation (req: Request, res: Response): Promise<Respons
 
   const userExists = await checkIfUserExists(email)
   if (userExists) {
-    return res.status(409).json({ error: 'User already exists' })
+    return res.status(409).json({ status: 'error', message: 'User already exists' })
   }
 
   const passwordHash = bcrypt.hashSync(password, 10)
   const newUser = await createUser(firstName, lastName, email, passwordHash)
 
-  return res.status(201).json({ message: 'User created successfully', user: userResource(newUser) })
+  return res.status(201).json({ status: 'success', message: 'User created successfully', user: userResource(newUser) })
 }
 
 async function checkIfUserExists (email: string): Promise<boolean> {
