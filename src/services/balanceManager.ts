@@ -1,11 +1,15 @@
 import { Request, Response } from 'express'
+import { validationResult } from 'express-validator'
 import { Equal, IsNull, Repository } from 'typeorm'
 import AppDataSource from '../database/data-source'
 import { Operation } from '../database/entities/operation'
+import { Record } from '../database/entities/record'
 import { User } from '../database/entities/user'
 import { UserStatus } from '../enums/userStatus'
 import { InsuficientCreditsError } from '../errors/insuficientCredits'
 import { InvalidTokenError } from '../errors/invalidToken'
+import { userResource } from '../resources/user'
+import { NoSecondParameterOperationFunction, OperationFunction, OptionalOperationFunction } from '../types/operationFunction'
 
 async function getUser (req: Request, userRepository: Repository<User>): Promise<User> {
   const { email } = req.body
@@ -64,6 +68,59 @@ function handleExceptions (err: unknown, res: Response): Response {
   return res.status(statusCode).json({ status: 'error', message })
 }
 
+async function registerRecord (user: User, operation: Operation, result: string): Promise<void> {
+  const recordRepository = AppDataSource.getRepository(Record)
+  const newRecord = new Record()
+  newRecord.operation_id = operation.id
+  newRecord.user = user
+  newRecord.amount = operation.cost
+  newRecord.user_balance = user.credits
+  newRecord.operation_response = result
+
+  await recordRepository.save(newRecord)
+}
+async function performOperation (req: Request, res: Response, operationType: string, operationFn: OperationFunction | OptionalOperationFunction | NoSecondParameterOperationFunction): Promise<Response> {
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      status: 'error',
+      errors: errors.array()
+    })
+  }
+
+  const userRepository = AppDataSource.getRepository(User)
+
+  const user = await getUser(req, userRepository)
+
+  const operation = await getOperation(req, operationType)
+
+  if (user.credits < operation.cost) {
+    throw new InsuficientCreditsError()
+  }
+
+  const {
+    first_number: firstNumber,
+    second_number: secondNumber
+  } = req.body
+
+  const result = operationFn(firstNumber, secondNumber)
+
+  await decreaseCreditsToUser(user, operation, userRepository)
+  await registerRecord(user, operation, result.toString())
+
+  return res.status(200).json({
+    status: 'success',
+    result,
+    user: userResource(user)
+  })
+}
+
 export {
-  decreaseCreditsToUser, getOperation, getUser, handleExceptions
+  decreaseCreditsToUser,
+  getOperation,
+  getUser,
+  handleExceptions,
+  performOperation,
+  registerRecord
 }

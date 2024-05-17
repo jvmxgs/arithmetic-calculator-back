@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+import { UserStatus } from '../../enums/userStatus'
 import Seeder from '../../interfaces/seederInterface'
 import AppDataSource from '../data-source'
 import { User } from '../entities/user'
@@ -16,6 +17,7 @@ const userSeeder: Seeder = {
       lastName: 'Doe',
       email: 'admin@example.com',
       password: bcrypt.hashSync('secret', 10),
+      status: UserStatus.active,
       credits: 500
     }))
 

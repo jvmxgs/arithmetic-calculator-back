@@ -32,7 +32,7 @@ const invoke = (async (req: Request, res: Response): Promise<Response> => {
       }
     })
 
-    if (user === null || user.status === 'inactive') {
+    if (user === null) {
       return res.status(401).json({ status: 'error', message: 'Invalid email or password' })
     }
 

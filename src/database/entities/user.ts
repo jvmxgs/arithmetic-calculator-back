@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { UserStatus } from '../../enums/userStatus'
+import { Record } from './record'
 
 @Entity('users')
 export class User {
@@ -36,4 +37,7 @@ export class User {
 
   @Column({ nullable: true })
     deleted_at!: Date
+
+  @OneToMany(() => Record, record => record.user)
+    records!: Record[]
 }
