@@ -5,7 +5,7 @@ import { User } from '../../database/entities/user'
 import { InsuficientCreditsError } from '../../errors/insuficientCredits'
 import { userResource } from '../../resources/user'
 import { decreaseCreditsToUser, getOperation, getUser, handleExceptions } from '../../services/balanceManager'
-import squareRoot from '../../services/squareRoot'
+import sqrt from '../../services/sqrt'
 
 const invoke = (async (req: Request, res: Response): Promise<Response> => {
   try {
@@ -32,7 +32,7 @@ const invoke = (async (req: Request, res: Response): Promise<Response> => {
       first_number: firstNumber
     } = req.body
 
-    const result = squareRoot(firstNumber)
+    const result = sqrt(firstNumber)
 
     await decreaseCreditsToUser(user, operation, userRepository)
 
