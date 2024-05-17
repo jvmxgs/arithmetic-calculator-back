@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
-import jwt, { JsonWebTokenError, JwtPayload } from 'jsonwebtoken'
+import jwt, { JsonWebTokenError } from 'jsonwebtoken'
 import appConfig from '../config/app'
+import { JwtPayload } from '../types/jwtPayload'
 
 export default function (req: Request, res: Response, next: NextFunction): void {
   try {
@@ -12,9 +13,10 @@ export default function (req: Request, res: Response, next: NextFunction): void 
       return
     }
 
-    const verifiedToken = jwt.verify(token, appConfig.key)
+    const decodedToken = jwt.verify(token, appConfig.key) as JwtPayload
+    req.body.email = decodedToken.email
 
-    regenerateToken(res, verifiedToken)
+    regenerateToken(res, decodedToken.email, decodedToken.exp)
 
     next()
   } catch (err) {
@@ -27,12 +29,11 @@ export default function (req: Request, res: Response, next: NextFunction): void 
   }
 }
 
-const regenerateToken = (res: Response, verifiedToken: string | JwtPayload): void => {
+const regenerateToken = (res: Response, email: string, exp: number | undefined): void => {
   const currentTime = Math.floor(Date.now() / 1000)
-  const decodedToken = verifiedToken as { exp: number, email: string }
 
-  if (decodedToken.exp - currentTime < 300) {
-    const newToken = jwt.sign({ email: decodedToken.email }, appConfig.key, { expiresIn: appConfig.jwt.expiresIn })
+  if ((exp ?? 0) - currentTime < 300) {
+    const newToken = jwt.sign({ email }, appConfig.key, { expiresIn: appConfig.jwt.expiresIn })
     res.setHeader('Authorization', `Bearer ${newToken}`)
   }
 }
