@@ -4,6 +4,10 @@ dotenv.config()
 
 export default {
   key: process.env.APP_KEY ?? 'secretkey',
+  logs: {
+    path: process.env.LOG_DIRECTORY ?? 'logs',
+    level: process.env.LOG_LEVEL ?? 'debug'
+  },
 
   jwt: {
     expiresIn: '1h'
