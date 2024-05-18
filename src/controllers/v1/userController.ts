@@ -4,18 +4,17 @@ import { validationResult } from 'express-validator'
 import { Equal, Repository } from 'typeorm'
 import AppDataSource from '../../database/data-source'
 import { User } from '../../database/entities/user'
+import { UserStatus } from '../../enums/userStatus'
 import { userResource } from '../../resources/user'
+import { sendErrorResponse, sendSuccessResponse } from '../../utils/responses'
 
 const index = (async (req: Request, res: Response): Promise<Response> => {
   try {
     const users = await AppDataSource.manager.find(User)
 
-    return res.json({
-      status: 'success',
-      users
-    })
+    return sendSuccessResponse(res, { users }, 'Users retrived successfully!')
   } catch (err) {
-    return res.status(500).json({ status: 'error', message: 'Internal server error' })
+    return sendErrorResponse(res, 'Internal Server Error')
   }
 }) as RequestHandler
 
@@ -28,15 +27,12 @@ export const store = (async (req: Request, res: Response): Promise<Response> => 
     const errors = validationResult(req)
 
     if (!errors.isEmpty()) {
-      return res.status(400).json({
-        status: 'error',
-        errors: errors.array()
-      })
+      return sendErrorResponse(res, 'Validation errors', 400, errors.array())
     }
 
     return await handleUserCreation(req, res)
   } catch (err) {
-    return res.status(500).json({ status: 'error', message: 'Internal server error' })
+    return sendErrorResponse(res, 'Internal Server Error')
   }
 }) as RequestHandler
 
@@ -48,13 +44,13 @@ async function handleUserCreation (req: Request, res: Response): Promise<Respons
 
   const userExists = await checkIfUserExists(email)
   if (userExists) {
-    return res.status(409).json({ status: 'error', message: 'User already exists' })
+    return sendErrorResponse(res, 'User already exists', 409)
   }
 
   const passwordHash = bcrypt.hashSync(password, 10)
   const newUser = await createUser(firstName, lastName, email, passwordHash)
 
-  return res.status(201).json({ status: 'success', message: 'User created successfully', user: userResource(newUser) })
+  return sendSuccessResponse(res, { user: userResource(newUser) }, 'User created successfully', 201)
 }
 
 async function checkIfUserExists (email: string): Promise<boolean> {
@@ -74,6 +70,7 @@ const saveUser = async (firstName: string, lastName: string, email: string, pass
   newUser.last_name = lastName
   newUser.email = email
   newUser.password = password
+  newUser.status = UserStatus.active
 
   return await userRepository.save(newUser)
 }

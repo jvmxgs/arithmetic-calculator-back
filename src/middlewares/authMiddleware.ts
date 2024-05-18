@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import jwt, { JsonWebTokenError } from 'jsonwebtoken'
 import appConfig from '../config/app'
 import { JwtPayload } from '../types/jwtPayload'
+import { sendErrorResponse } from '../utils/responses'
 
 export default function (req: Request, res: Response, next: NextFunction): void {
   try {
@@ -9,23 +10,23 @@ export default function (req: Request, res: Response, next: NextFunction): void 
     const [, token] = authorization.split(' ')
 
     if (token === undefined) {
-      res.status(401).json({ error: 'No token provided' })
+      sendErrorResponse(res, 'No token provided', 401)
       return
     }
 
     const decodedToken = jwt.verify(token, appConfig.key) as JwtPayload
-    req.body.email = decodedToken.email
+    req.body.user = { email: decodedToken.email }
 
     regenerateToken(res, decodedToken.email, decodedToken.exp)
 
     next()
   } catch (err) {
     if (err instanceof JsonWebTokenError) {
-      res.status(401).json({ error: 'Invalid token!' })
+      sendErrorResponse(res, 'Invalid token', 401)
       return
     }
 
-    res.status(500).json({ error: 'Internal server error' })
+    sendErrorResponse(res, 'Internal server error')
   }
 }
 

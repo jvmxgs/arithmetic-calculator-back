@@ -30,7 +30,7 @@ const userSeeder: Seeder = {
     }))
 
     users.push(createOperation({
-      type: 'square_root',
+      type: 'sqrt',
       cost: 4
     }))
 

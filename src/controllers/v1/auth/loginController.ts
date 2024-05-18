@@ -7,17 +7,14 @@ import appConfig from '../../../config/app'
 import AppDataSource from '../../../database/data-source'
 import { User } from '../../../database/entities/user'
 import { UserStatus } from '../../../enums/userStatus'
-import { userResource } from '../../../resources/user'
+import { sendErrorResponse, sendSuccessResponse } from '../../../utils/responses'
 
 const invoke = (async (req: Request, res: Response): Promise<Response> => {
   try {
     const errors = validationResult(req)
 
     if (!errors.isEmpty()) {
-      return res.status(400).json({
-        status: 'error',
-        errors: errors.array()
-      })
+      return sendErrorResponse(res, 'Validation errors', 400, errors.array())
     }
 
     const { email, password } = req.body
@@ -33,24 +30,20 @@ const invoke = (async (req: Request, res: Response): Promise<Response> => {
     })
 
     if (user === null) {
-      return res.status(401).json({ status: 'error', message: 'Invalid email or password' })
+      return sendErrorResponse(res, 'Invalid email or password', 401)
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password)
 
     if (!passwordMatch) {
-      return res.status(401).json({ status: 'error', message: 'Invalid email or password' })
+      return sendErrorResponse(res, 'Invalid email or password', 401)
     }
 
     const token = jwt.sign({ email }, appConfig.key, { expiresIn: appConfig.jwt.expiresIn })
 
-    return res.status(200).json({
-      status: 'success',
-      token,
-      user: userResource(user)
-    })
+    return sendSuccessResponse(res, { token }, 'Logged in successfully')
   } catch (err) {
-    return res.status(401).json({ status: 'error', message: 'Authentication failed' })
+    return sendErrorResponse(res, 'Authentication failed', 401)
   }
 }) as RequestHandler
 
