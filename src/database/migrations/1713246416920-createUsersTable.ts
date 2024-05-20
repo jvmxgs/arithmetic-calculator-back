@@ -33,7 +33,7 @@ export class CreateUsersTable1713246416920 implements MigrationInterface {
           name: 'status',
           type: 'enum',
           enum: ['active', 'inactive'],
-          default: '"inactive"'
+          default: `'inactive'`
         },
         {
           name: 'credits',
@@ -43,14 +43,12 @@ export class CreateUsersTable1713246416920 implements MigrationInterface {
         {
           name: 'created_at',
           type: 'timestamp',
-          default: 'CURRENT_TIMESTAMP',
-          isNullable: true
+          default: `CURRENT_TIMESTAMP`
         },
         {
           name: 'updated_at',
           type: 'timestamp',
-          default: 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
-          isNullable: true
+          default: `CURRENT_TIMESTAMP`
         },
         {
           name: 'deleted_at',

@@ -5,7 +5,7 @@ import { DataSource } from 'typeorm'
 dotenv.config()
 
 const AppTestDataSource = new DataSource({
-  type: 'mysql',
+  type: 'postgres',
   host: process.env.TEST_DB_HOST,
   port: Number(process.env.TEST_DB_PORT),
   username: process.env.TEST_DB_USERNAME,
@@ -19,7 +19,7 @@ const AppTestDataSource = new DataSource({
 })
 
 const AppDataSource = new DataSource({
-  type: 'mysql',
+  type: 'postgres',
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
   username: process.env.DB_USERNAME,

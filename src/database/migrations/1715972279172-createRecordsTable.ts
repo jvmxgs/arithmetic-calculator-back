@@ -37,18 +37,18 @@ export class CreateRecordsTable1715972279172 implements MigrationInterface {
         {
           name: 'date',
           type: 'timestamp',
-          default: 'CURRENT_TIMESTAMP'
+          default: `CURRENT_TIMESTAMP`
         },
         {
           name: 'created_at',
           type: 'timestamp',
-          default: 'CURRENT_TIMESTAMP',
+          default: `CURRENT_TIMESTAMP`,
           isNullable: true
         },
         {
           name: 'updated_at',
           type: 'timestamp',
-          default: 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+          default: `CURRENT_TIMESTAMP`,
           isNullable: true
         },
         {

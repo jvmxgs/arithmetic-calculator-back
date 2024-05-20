@@ -25,13 +25,13 @@ export class CreateOperations1715928583907 implements MigrationInterface {
         {
           name: 'created_at',
           type: 'timestamp',
-          default: 'CURRENT_TIMESTAMP',
+          default: `CURRENT_TIMESTAMP`,
           isNullable: true
         },
         {
           name: 'updated_at',
           type: 'timestamp',
-          default: 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+          default: `CURRENT_TIMESTAMP`,
           isNullable: true
         },
         {
