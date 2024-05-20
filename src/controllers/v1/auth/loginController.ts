@@ -7,6 +7,7 @@ import appConfig from '../../../config/app'
 import AppDataSource from '../../../database/data-source'
 import { User } from '../../../database/entities/user'
 import { UserStatus } from '../../../enums/userStatus'
+import { userResource } from '../../../resources/user'
 import { sendErrorResponse, sendSuccessResponse } from '../../../utils/responses'
 
 const invoke = (async (req: Request, res: Response): Promise<Response> => {
@@ -41,7 +42,7 @@ const invoke = (async (req: Request, res: Response): Promise<Response> => {
 
     const token = jwt.sign({ email }, appConfig.key, { expiresIn: appConfig.jwt.expiresIn })
 
-    return sendSuccessResponse(res, { token }, 'Logged in successfully')
+    return sendSuccessResponse(res, { token, user: userResource(user) }, 'Logged in successfully')
   } catch (err) {
     return sendErrorResponse(res, 'Authentication failed', 401)
   }

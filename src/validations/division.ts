@@ -17,7 +17,7 @@ export default checkSchema({
     },
     isNumeric: {
       bail: true,
-      errorMessage: 'Second name should be a number'
+      errorMessage: 'Second number should be a number'
     },
     custom: {
       options: (value) => (Math.abs(parseFloat(value)) !== 0),

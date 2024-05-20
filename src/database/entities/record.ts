@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { Operation } from './operation'
 import { User } from './user'
 
 @Entity('records')
@@ -36,4 +37,8 @@ export class Record {
   @ManyToOne(() => User, user => user.records)
   @JoinColumn({ name: 'user_id' })
     user!: User
+
+  @ManyToOne(() => Operation)
+  @JoinColumn({ name: 'operation_id' })
+    operation!: Operation
 }

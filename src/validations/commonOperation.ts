@@ -16,7 +16,7 @@ export default checkSchema({
       errorMessage: 'Second number is required'
     },
     isNumeric: {
-      errorMessage: 'Second name should be a number'
+      errorMessage: 'Second number should be a number'
     }
   }
 })

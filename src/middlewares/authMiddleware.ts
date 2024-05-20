@@ -1,10 +1,14 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt, { JsonWebTokenError } from 'jsonwebtoken'
+import { Equal, IsNull } from 'typeorm'
 import appConfig from '../config/app'
+import AppDataSource from '../database/data-source'
+import { User } from '../database/entities/user'
+import { UserStatus } from '../enums/userStatus'
 import { JwtPayload } from '../types/jwtPayload'
 import { sendErrorResponse } from '../utils/responses'
 
-export default function (req: Request, res: Response, next: NextFunction): void {
+export default async function (req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const authorization = req.headers.authorization ?? ''
     const [, token] = authorization.split(' ')
@@ -17,7 +21,7 @@ export default function (req: Request, res: Response, next: NextFunction): void 
     const decodedToken = jwt.verify(token, appConfig.key) as JwtPayload
     req.body.user = { email: decodedToken.email }
 
-    regenerateToken(res, decodedToken.email, decodedToken.exp)
+    await regenerateToken(res, decodedToken.email, decodedToken.exp)
 
     next()
   } catch (err) {
@@ -30,7 +34,21 @@ export default function (req: Request, res: Response, next: NextFunction): void 
   }
 }
 
-const regenerateToken = (res: Response, email: string, exp: number | undefined): void => {
+const regenerateToken = async (res: Response, email: string, exp: number | undefined): Promise<void> => {
+  const userRepository = AppDataSource.getRepository(User)
+
+  const user = await userRepository.findOne({
+    where: {
+      email: Equal(email),
+      status: Equal(UserStatus.active),
+      deleted_at: IsNull()
+    }
+  })
+
+  if (user === null) {
+    return
+  }
+
   const currentTime = Math.floor(Date.now() / 1000)
 
   if ((exp ?? 0) - currentTime < 300) {

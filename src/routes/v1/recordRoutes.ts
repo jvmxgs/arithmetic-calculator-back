@@ -1,9 +1,9 @@
 import express from 'express'
-import randomStringController from '../../controllers/v1/randomStringController'
+import recordController from '../../controllers/v1/recordController'
 import authMiddleware from '../../middlewares/authMiddleware'
 
 const router = express.Router()
 
-router.post('/', authMiddleware, randomStringController.invoke)
+router.get('/', authMiddleware, recordController.index)
 
 export default router
