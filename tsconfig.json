@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-      "lib": ["es6"],
       "target": "es6",
       "module": "commonjs",
       "strict": true,
@@ -9,11 +8,12 @@
       "experimentalDecorators": true,
       "esModuleInterop": true,
       "outDir": "dist",
+      "rootDir": "./src",
       "skipLibCheck": true
   },
   "include": ["src/**/*"],
   "exclude": [
     "node_modules",
-    "__tests__/",
+    "__tests__",
   ]
 }

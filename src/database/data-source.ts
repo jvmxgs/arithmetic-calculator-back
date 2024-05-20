@@ -1,4 +1,5 @@
 import * as dotenv from 'dotenv'
+import path from 'path'
 import 'reflect-metadata'
 import { DataSource } from 'typeorm'
 
@@ -13,8 +14,8 @@ const AppTestDataSource = new DataSource({
   database: process.env.TEST_DB_NAME,
   synchronize: true,
   logging: false,
-  entities: ['src/database/entities/*.ts'],
-  migrations: ['src/database/migrations/*.ts'],
+  entities: [path.join(__dirname, 'entities/*{.ts,.js}')],
+  migrations: [path.join(__dirname, 'migrations/*{.ts,.js}')],
   subscribers: []
 })
 
@@ -27,8 +28,8 @@ const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: false,
   logging: false,
-  entities: ['src/database/entities/*.ts'],
-  migrations: ['src/database/migrations/*.ts'],
+  entities: [path.join(__dirname, 'entities/*{.ts,.js}')],
+  migrations: [path.join(__dirname, 'migrations/*{.ts,.js}')],
   subscribers: []
 })
 
